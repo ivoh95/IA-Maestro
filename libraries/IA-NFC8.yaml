@@ -1,0 +1,377 @@
+globals:
+  id: nfc_uuids
+  type: uint32_t[8]
+  restore_value: yes
+  initial_value: "{0,0,0,0,0,0,0,0}"
+
+
+esphome:
+  on_boot:
+     priority: 300
+     then:
+
+        - lambda: |-
+             id(nfc1_saved).publish_state(id(nfc_uuids)[0]);
+             id(nfc2_saved).publish_state(id(nfc_uuids)[1]);
+             id(nfc3_saved).publish_state(id(nfc_uuids)[2]);
+             id(nfc4_saved).publish_state(id(nfc_uuids)[3]);
+             id(nfc5_saved).publish_state(id(nfc_uuids)[4]);
+             id(nfc6_saved).publish_state(id(nfc_uuids)[5]);
+             id(nfc7_saved).publish_state(id(nfc_uuids)[6]);
+             id(nfc8_saved).publish_state(id(nfc_uuids)[7]);
+             if (isnan(id(nfc1_current).raw_state)) id(nfc1_current).publish_state(0);
+             if (isnan(id(nfc2_current).raw_state)) id(nfc2_current).publish_state(0);
+             if (isnan(id(nfc3_current).raw_state)) id(nfc3_current).publish_state(0);
+             if (isnan(id(nfc4_current).raw_state)) id(nfc4_current).publish_state(0);
+             if (isnan(id(nfc5_current).raw_state)) id(nfc5_current).publish_state(0);
+             if (isnan(id(nfc6_current).raw_state)) id(nfc6_current).publish_state(0);
+             if (isnan(id(nfc7_current).raw_state)) id(nfc7_current).publish_state(0);
+             if (isnan(id(nfc8_current).raw_state)) id(nfc8_current).publish_state(0);
+             id(nfc1_detect).publish_state(id(nfc1_current).state == id(nfc1_saved).state);
+             id(nfc2_detect).publish_state(id(nfc2_current).state == id(nfc2_saved).state);
+             id(nfc3_detect).publish_state(id(nfc3_current).state == id(nfc3_saved).state);
+             id(nfc4_detect).publish_state(id(nfc4_current).state == id(nfc4_saved).state);
+             id(nfc5_detect).publish_state(id(nfc5_current).state == id(nfc5_saved).state);
+             id(nfc6_detect).publish_state(id(nfc6_current).state == id(nfc6_saved).state);
+             id(nfc7_detect).publish_state(id(nfc7_current).state == id(nfc7_saved).state);
+             id(nfc8_detect).publish_state(id(nfc8_current).state == id(nfc8_saved).state);
+             id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+           
+binary_sensor:
+  - platform: template
+    name: "NFC1 Correct"
+    id: nfc1_detect
+  - platform: template
+    name: "NFC2 Correct"
+    id: nfc2_detect
+  - platform: template
+    name: "NFC3 Correct"
+    id: nfc3_detect
+  - platform: template
+    name: "NFC4 Correct"
+    id: nfc4_detect
+  - platform: template
+    name: "NFC5 Correct"
+    id: nfc5_detect
+  - platform: template
+    name: "NFC6 Correct"
+    id: nfc6_detect
+  - platform: template
+    name: "NFC7 Correct"
+    id: nfc7_detect
+  - platform: template
+    name: "NFC8 Correct"
+    id: nfc8_detect
+
+sensor:
+  - platform: template
+    name: "NFC1 Current UUID"
+    id: nfc1_current
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC1 Saved UUID"
+    id: nfc1_saved
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC2 Current UUID"
+    id: nfc2_current
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC2 Saved UUID"
+    id: nfc2_saved
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC3 Current UUID"
+    id: nfc3_current
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC3 Saved UUID"
+    id: nfc3_saved
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC4 Current UUID"
+    id: nfc4_current
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC4 Saved UUID"
+    id: nfc4_saved
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC5 Current UUID"
+    id: nfc5_current
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC5 Saved UUID"
+    id: nfc5_saved
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC6 Current UUID"
+    id: nfc6_current
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC6 Saved UUID"
+    id: nfc6_saved
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC7 Current UUID"
+    id: nfc7_current
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC7 Saved UUID"
+    id: nfc7_saved
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC8 Current UUID"
+    id: nfc8_current
+    accuracy_decimals: 0
+  - platform: template
+    name: "NFC8 Saved UUID"
+    id: nfc8_saved
+    accuracy_decimals: 0  
+  - platform: template
+    name: "Total Correct"
+    id: nfc_total_correct
+    lambda: |-
+      int total_correct_counter = id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state;
+      return total_correct_counter;
+    update_interval: never
+
+pcf8574:
+  - id: 'pcf8574_hub'
+    i2c_id: i2c_bus
+    address: 0x3E
+    pcf8575: false
+spi:
+  clk_pin: GPIO33
+  mosi_pin: GPIO15
+  miso_pin: GPIO13
+i2c:
+  - id: i2c_bus
+    sda: GPIO14
+    scl: GPIO4
+    scan: true
+    frequency: 100kHz
+
+pn532_spi:
+- id: 'nfc1_reader'
+  cs_pin:
+      pcf8574: pcf8574_hub
+      number: 0
+      mode:
+          output: true
+  data_rate: 200kHz 
+  update_interval: 600ms
+  on_tag:
+  - sensor.template.publish:
+      id: nfc1_current
+      state: !lambda |-
+          return std::stoul(x.substr(0, 2) + x.substr(3, 2) + x.substr(6, 2)+ x.substr(9, 2), nullptr, 16);
+  - lambda: |-
+          id(nfc1_detect).publish_state(id(nfc1_current).state == id(nfc1_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+  on_tag_removed:
+  - sensor.template.publish:
+      id: nfc1_current
+      state: 0
+  - lambda: |-
+              id(nfc1_detect).publish_state(id(nfc1_current).state == id(nfc1_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+- id: 'nfc2_reader'
+  cs_pin:
+      pcf8574: pcf8574_hub
+      number: 1
+      mode:
+          output: true
+  data_rate: 200kHz
+  update_interval: 600ms
+  on_tag:
+  - sensor.template.publish:
+      id: nfc2_current
+      state: !lambda return std::stoul(x.substr(0, 2) + x.substr(3, 2) + x.substr(6, 2)+ x.substr(9, 2), nullptr, 16);
+  - lambda: |-
+          id(nfc2_detect).publish_state(id(nfc2_current).state == id(nfc2_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);          
+  on_tag_removed:
+  - sensor.template.publish:
+      id: nfc2_current
+      state: 0
+  - lambda: |-
+            id(nfc2_detect).publish_state(id(nfc2_current).state == id(nfc2_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+- id: 'nfc3_reader'
+  cs_pin:
+      pcf8574: pcf8574_hub
+      number: 2
+      mode:
+          output: true
+  data_rate: 200kHz
+  update_interval: 600ms
+  on_tag:
+  - sensor.template.publish:
+      id: nfc3_current
+      state: !lambda return std::stoul(x.substr(0, 2) + x.substr(3, 2) + x.substr(6, 2)+ x.substr(9, 2), nullptr, 16);
+  - lambda: |-
+          id(nfc3_detect).publish_state(id(nfc3_current).state == id(nfc3_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state); 
+  on_tag_removed:
+  - sensor.template.publish:
+      id: nfc3_current
+      state: 0
+  - lambda: |-
+            id(nfc3_detect).publish_state(id(nfc3_current).state == id(nfc3_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+- id: 'nfc4_reader'
+  cs_pin:
+      pcf8574: pcf8574_hub
+      number: 3
+      mode:
+          output: true
+  data_rate: 200kHz
+  update_interval: 600ms
+  on_tag:
+  - sensor.template.publish:
+      id: nfc4_current
+      state: !lambda return std::stoul(x.substr(0, 2) + x.substr(3, 2) + x.substr(6, 2)+ x.substr(9, 2), nullptr, 16);
+  - lambda: |-
+          id(nfc4_detect).publish_state(id(nfc4_current).state == id(nfc4_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);  
+  on_tag_removed:
+  - sensor.template.publish:
+      id: nfc4_current
+      state: 0
+  - lambda: |-
+            id(nfc4_detect).publish_state(id(nfc4_current).state == id(nfc4_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+- id: 'nfc5_reader'
+  cs_pin:
+      pcf8574: pcf8574_hub
+      number: 4
+      mode:
+          output: true
+  data_rate: 200kHz
+  update_interval: 600ms
+  on_tag:
+  - sensor.template.publish:
+      id: nfc5_current
+      state: !lambda return std::stoul(x.substr(0, 2) + x.substr(3, 2) + x.substr(6, 2)+ x.substr(9, 2), nullptr, 16);
+  - lambda: |-
+          id(nfc5_detect).publish_state(id(nfc5_current).state == id(nfc5_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+  on_tag_removed:
+  - sensor.template.publish:
+      id: nfc5_current
+      state: 0
+  - lambda: |-
+            id(nfc5_detect).publish_state(id(nfc5_current).state == id(nfc5_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+- id: 'nfc6_reader'
+  cs_pin:
+      pcf8574: pcf8574_hub
+      number: 5
+      mode:
+          output: true
+  data_rate: 200kHz  
+  update_interval: 600ms
+  on_tag:
+  - sensor.template.publish:
+      id: nfc6_current
+      state: !lambda return std::stoul(x.substr(0, 2) + x.substr(3, 2) + x.substr(6, 2)+ x.substr(9, 2), nullptr, 16);
+  - lambda: |-
+          id(nfc6_detect).publish_state(id(nfc6_current).state == id(nfc6_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+  on_tag_removed:
+  - sensor.template.publish:
+      id: nfc6_current
+      state: 0
+  - lambda: |-
+            id(nfc6_detect).publish_state(id(nfc6_current).state == id(nfc6_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+- id: 'nfc7_reader'
+  cs_pin:
+      pcf8574: pcf8574_hub
+      number: 6
+      mode:
+          output: true
+  data_rate: 200kHz
+  update_interval: 600ms
+  on_tag:
+  - sensor.template.publish:
+      id: nfc7_current
+      state: !lambda return std::stoul(x.substr(0, 2) + x.substr(3, 2) + x.substr(6, 2)+ x.substr(9, 2), nullptr, 16);
+  - lambda: |-
+          id(nfc7_detect).publish_state(id(nfc7_current).state == id(nfc7_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+  on_tag_removed:
+  - sensor.template.publish:
+      id: nfc7_current
+      state: 0
+  - lambda: |-
+            id(nfc7_detect).publish_state(id(nfc7_current).state == id(nfc7_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+- id: 'nfc8_reader'
+  cs_pin:
+      pcf8574: pcf8574_hub
+      number: 7
+      mode:
+          output: true
+  data_rate: 200kHz
+  update_interval: 600ms
+  on_tag:
+  - sensor.template.publish:
+      id: nfc8_current
+      state: !lambda return std::stoul(x.substr(0, 2) + x.substr(3, 2) + x.substr(6, 2)+ x.substr(9, 2), nullptr, 16);
+  - lambda: |-
+          id(nfc8_detect).publish_state(id(nfc8_current).state == id(nfc8_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+  on_tag_removed:
+  - sensor.template.publish:
+      id: nfc8_current
+      state: 0
+  - lambda: |-
+            id(nfc8_detect).publish_state(id(nfc8_current).state == id(nfc8_saved).state);
+  - lambda: |-
+          id(nfc_total_correct).publish_state( id(nfc1_detect).state + id(nfc2_detect).state + id(nfc3_detect).state + id(nfc4_detect).state + id(nfc5_detect).state + id(nfc6_detect).state+ id(nfc7_detect).state+ id(nfc8_detect).state);
+
+script:
+  - id: nfc_program_answer
+    then:
+      - lambda: |-
+            id(nfc_uuids)[0] = id(nfc1_current).state;
+            id(nfc1_saved).publish_state(id(nfc_uuids)[0]);
+            id(nfc1_detect).publish_state(id(nfc1_current).state == id(nfc1_saved).state);
+            id(nfc_uuids)[1] = id(nfc2_current).state;
+            id(nfc2_saved).publish_state(id(nfc_uuids)[1]);
+            id(nfc2_detect).publish_state(id(nfc2_current).state == id(nfc2_saved).state);
+            id(nfc_uuids)[2] = id(nfc3_current).state;
+            id(nfc3_saved).publish_state(id(nfc_uuids)[2]);
+            id(nfc3_detect).publish_state(id(nfc3_current).state == id(nfc3_saved).state);
+            id(nfc_uuids)[3] = id(nfc4_current).state;
+            id(nfc4_saved).publish_state(id(nfc_uuids)[3]);
+            id(nfc4_detect).publish_state(id(nfc4_current).state == id(nfc4_saved).state);
+            id(nfc_uuids)[4] = id(nfc5_current).state;
+            id(nfc5_saved).publish_state(id(nfc_uuids)[4]);
+            id(nfc5_detect).publish_state(id(nfc5_current).state == id(nfc5_saved).state);
+            id(nfc_uuids)[5] = id(nfc6_current).state;
+            id(nfc6_saved).publish_state(id(nfc_uuids)[5]);
+            id(nfc6_detect).publish_state(id(nfc6_current).state == id(nfc6_saved).state);
+            id(nfc_uuids)[6] = id(nfc7_current).state;
+            id(nfc7_saved).publish_state(id(nfc_uuids)[6]);
+            id(nfc7_detect).publish_state(id(nfc7_current).state == id(nfc7_saved).state);
+            id(nfc_uuids)[7] = id(nfc8_current).state;
+            id(nfc8_saved).publish_state(id(nfc_uuids)[7]);
+            id(nfc8_detect).publish_state(id(nfc8_current).state == id(nfc8_saved).state);

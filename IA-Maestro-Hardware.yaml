@@ -1,0 +1,16 @@
+esphome:
+  name: ia-maestro
+  name_add_mac_suffix: true
+  project:
+    name: ia.maestro
+    version: "1.2"
+packages:
+  pcb_base: !include libraries/IA-PCBv1.1-ethernet.yaml
+
+logger:
+  level: DEBUG
+
+api:
+web_server:
+ota:
+  platform: esphome

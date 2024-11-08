@@ -1,0 +1,140 @@
+
+binary_sensor:
+- id: !remove input1
+- id: !remove input2
+- id: !remove input3
+- id: !remove input4
+
+sensor:
+- platform: adc
+  id: input1
+  name: "Input 1 Analog"
+  pin: GPIO34
+  accuracy_decimals: 4
+  update_interval: 100ms
+  attenuation: auto
+  filters:
+    - sliding_window_moving_average:
+        window_size: 10
+        send_every: 1
+    - calibrate_polynomial:
+       degree: 3
+       datapoints:
+        # Map 0.0 (from sensor) to 0.0 (true value)
+        - 3.15 -> 0.0
+        - 3.13 -> 0.5
+        - 3.10 -> 1.0
+        - 2.05 -> 1.5
+        - 1.5 -> 2.0
+        - 1.41 -> 2.5
+        - 1.28 -> 3.0
+        - 1.20 -> 3.5
+        - 1.15 -> 4.0
+        - 0.87 -> 5.0
+        - 0.73 -> 6.0
+        - 0.5 -> 7.0
+        - 0.3 -> 8.0
+        - 0.26 -> 9.0
+        - 0.24 -> 10.0
+        - 0.22 -> 11.0
+        - 0.20 -> 12.0
+        - 0.16 -> 18.0
+- platform: adc
+  id: input2
+  name: "Input 2 Analog"
+  pin: GPIO35
+  accuracy_decimals: 4
+  update_interval: 100ms
+  attenuation: auto
+  filters:
+    - sliding_window_moving_average:
+        window_size: 10
+        send_every: 1
+    - calibrate_polynomial:
+       degree: 3
+       datapoints:
+        # Map 0.0 (from sensor) to 0.0 (true value)
+        - 3.15 -> 0.0
+        - 3.13 -> 0.5
+        - 3.10 -> 1.0
+        - 2.05 -> 1.5
+        - 1.5 -> 2.0
+        - 1.41 -> 2.5
+        - 1.28 -> 3.0
+        - 1.20 -> 3.5
+        - 1.15 -> 4.0
+        - 0.87 -> 5.0
+        - 0.73 -> 6.0
+        - 0.5 -> 7.0
+        - 0.3 -> 8.0
+        - 0.26 -> 9.0
+        - 0.24 -> 10.0
+        - 0.22 -> 11.0
+        - 0.20 -> 12.0
+        - 0.16 -> 18.0
+- platform: adc
+  id: input3
+  name: "Input 3 Analog"
+  pin: GPIO36
+  accuracy_decimals: 4
+  update_interval: 100ms
+  attenuation: auto
+  filters:
+    - sliding_window_moving_average:
+        window_size: 10
+        send_every: 1
+    - calibrate_polynomial:
+       degree: 3
+       datapoints:
+        # Map 0.0 (from sensor) to 0.0 (true value)
+        - 3.15 -> 0.0
+        - 3.13 -> 0.5
+        - 3.10 -> 1.0
+        - 2.05 -> 1.5
+        - 1.5 -> 2.0
+        - 1.41 -> 2.5
+        - 1.28 -> 3.0
+        - 1.20 -> 3.5
+        - 1.15 -> 4.0
+        - 0.87 -> 5.0
+        - 0.73 -> 6.0
+        - 0.5 -> 7.0
+        - 0.3 -> 8.0
+        - 0.26 -> 9.0
+        - 0.24 -> 10.0
+        - 0.22 -> 11.0
+        - 0.20 -> 12.0
+        - 0.16 -> 18.0
+- platform: adc
+  id: input4
+  name: "Input 4 Analog"
+  pin: GPIO39
+  accuracy_decimals: 4
+  update_interval: 100ms
+  attenuation: auto
+  filters:
+    - sliding_window_moving_average:
+        window_size: 10
+        send_every: 1
+    - calibrate_polynomial:
+       degree: 3
+       datapoints:
+        # Map 0.0 (from sensor) to 0.0 (true value)
+        - 3.15 -> 0.0
+        - 3.13 -> 0.5
+        - 3.10 -> 1.0
+        - 2.05 -> 1.5
+        - 1.5 -> 2.0
+        - 1.41 -> 2.5
+        - 1.28 -> 3.0
+        - 1.20 -> 3.5
+        - 1.15 -> 4.0
+        - 0.87 -> 5.0
+        - 0.73 -> 6.0
+        - 0.5 -> 7.0
+        - 0.3 -> 8.0
+        - 0.26 -> 9.0
+        - 0.24 -> 10.0
+        - 0.22 -> 11.0
+        - 0.20 -> 12.0
+        - 0.16 -> 18.0

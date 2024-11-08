@@ -1,0 +1,134 @@
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+    
+button:
+  - platform: restart
+    name: "Restart"
+    id: button_restart
+
+xl9535:
+  - id: xl9535_internal
+    i2c_id: i2c_internal
+    address: 0x20
+
+switch:
+  - platform: gpio
+    name: Relay Output
+    id: output_relay
+    pin:
+      xl9535: xl9535_internal
+      number: 0
+      mode:
+        output: true
+      inverted: false
+  - platform: gpio
+    name: Output1
+    id: output1
+    pin:
+      xl9535: xl9535_internal
+      number: 1
+      mode:
+        output: true
+      inverted: false  
+  - platform: gpio
+    name: Output2
+    id: output2
+    pin:
+      xl9535: xl9535_internal
+      number: 2
+      mode:
+        output: true
+      inverted: false  
+  - platform: gpio
+    name: Output3
+    id: output3
+    pin:
+      xl9535: xl9535_internal
+      number: 3
+      mode:
+        output: true
+      inverted: false  
+  - platform: gpio
+    name: LED1
+    id: output_led1
+    pin:
+      xl9535: xl9535_internal
+      number: 4
+      mode:
+        output: true
+      inverted: false  
+  - platform: gpio
+    name: LED2
+    id: output_led2
+    pin:
+      xl9535: xl9535_internal
+      number: 5
+      mode:
+        output: true
+      inverted: false  
+  - platform: gpio
+    name: Expansion 5v Power
+    restore_mode: ALWAYS_ON
+    id: output_5v_disable
+    pin:
+      xl9535: xl9535_internal
+      number: 6
+      mode:
+        output: true
+      inverted: false  
+light:
+  - platform: monochromatic
+    name: PWM Output4
+    output: pmw_output4_pin
+    id: output4_pwm
+output:
+  - platform: ledc
+    id: pmw_output4_pin
+    pin: GPIO2
+    frequency: 500hz
+binary_sensor:
+  - platform: gpio
+    pin: 
+      number: GPIO0
+      inverted: true
+    name: "Program Button"
+    id: button_pcb
+  - platform: gpio
+    id: input1
+    pin: 
+      number: GPIO34
+      inverted: true
+    name: Input1
+  - platform: gpio
+    id: input2
+    pin: 
+      number: GPIO35
+      inverted: true
+    name: Input2
+  - platform: gpio
+    id: input3
+    pin: 
+      number: GPIO36
+      inverted: true
+    name: Input3
+  - platform: gpio
+    id: input4
+    pin: 
+      number: GPIO39
+      inverted: true
+    name: Input4
+  - platform: gpio
+    id: input_5v_status
+    name: Expansion 5v Status
+    pin:
+      xl9535: xl9535_internal
+      number: 7
+
+i2c:
+  - id: i2c_internal
+    sda: GPIO5
+    scl: GPIO16
+    scan: true
+    frequency: 400kHz

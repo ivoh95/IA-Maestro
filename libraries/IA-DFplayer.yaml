@@ -1,0 +1,4 @@
+uart:
+  tx_pin: 32
+  baud_rate: 9600
+dfplayer:

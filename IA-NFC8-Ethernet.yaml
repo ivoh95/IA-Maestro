@@ -1,0 +1,44 @@
+esphome:
+  name: ia-nfc8
+  name_add_mac_suffix: true
+  project:
+    name: ia.nfc8
+    version: "1.2"
+packages:
+  pcb_base: !include libraries/IA-PCBv1.1-ethernet.yaml
+  nfc_base: !include libraries/IA-NFC8.yaml
+preferences:
+  flash_write_interval: 0s 
+
+sensor:
+- id: !extend nfc_total_correct
+  on_value_range:
+  - below: 7.5
+    then:
+      - switch.turn_off: output_relay
+      - switch.turn_off: output1
+  - above: 7.5
+    then:
+      - switch.turn_on: output_relay
+      - switch.turn_on: output1
+      
+binary_sensor:
+- id: !extend button_pcb
+  on_press:
+      - switch.turn_on: output_led1
+      - script.execute: nfc_program_answer
+      - delay: 1s
+      - switch.turn_off: output_led1
+      - button.press: button_restart
+
+logger:
+  level: DEBUG
+  logs:
+    component: ERROR #dont complain about components taking a log time(nfc is slow)
+api:
+  reboot_timeout: 0s
+web_server:
+  port: 80
+  local: true
+ota:
+  platform: esphome

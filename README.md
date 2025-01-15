@@ -37,6 +37,31 @@ packages:
   player_base: !include libraries/IA-DFplayer.yaml #sets up the df player 
 ```
 
+### Quick Start Frequently Asked Questions FAQ
+#### Setting A Static IP Address or Modifying Ethernet Settings
+In order to modify the existing ethernet configuration, it must be manually defined in the YAML. Replacing **libraries/IA-PCBv1.1-ethernet.yaml** with **libraries/IA-PCBv1.1.yaml** will allow you to manually define the ethernet settings.
+
+Example:
+```
+packages:
+  pcb_base: !include libraries/IA-PCBv1.1.yaml #dont include the default ethernet config
+  nfc_base: !include libraries/IA-NFC8.yaml
+
+ethernet: #manually define the ethernet including static ip or use address options
+  id: eth 
+  type: RTL8201 #should not be changed
+  mdc_pin: GPIO23 #should not be changed
+  mdio_pin: GPIO18 #should not be changed
+  clk_mode: GPIO17_OUT #should not be changed
+  phy_addr: 0 #should not be changed
+  use_address: 192.168.1.200 #the address to use for uploading OTA firmware
+  manual_ip: 
+    static_ip: 192.168.1.200 
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+```
+
+
 # Detailed Hardware Specifications
 ## USB
 USB C with USB Serial converter to allow easy programming of the ESP32. ESP32 serial pins are also available on an internal header to allow programming with an external programmer. USB power is limited to 5W (5V 1A) so it is recommended to disconnect external accessories for programming if they may exceed this power limit. 
